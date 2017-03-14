@@ -1,10 +1,12 @@
 import "/robocomp/interfaces/IDSLs/TripodController.idsl";
+import "/robocomp/interfaces/IDSLs/JointMotor.idsl";
 
 Component Tripod
 {
 	Communications
 	{
 		implements TripodController;
+		requires JointMotor, TripodController;
 	};
 	language  Python;
 };

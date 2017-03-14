@@ -33,6 +33,9 @@ import RoboCompCommonBehavior
 preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ --all /opt/robocomp/interfaces/"
 Ice.loadSlice(preStr+"TripodController.ice")
 from RoboCompTripController import *
+preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ --all /opt/robocomp/interfaces/"
+Ice.loadSlice(preStr+"JointMotor.ice")
+from RoboCompJointMotor import *
 
 
 from tripodcontrollerI import *
@@ -46,6 +49,8 @@ class GenericWorker(QtCore.QObject):
 		super(GenericWorker, self).__init__()
 
 
+		self.jointmotor_proxy = mprx["JointMotorProxy"]
+		self.tripodcontroller_proxy = mprx["TripodControllerProxy"]
 		
 		
 		self.mutex = QtCore.QMutex(QtCore.QMutex.Recursive)

@@ -18,7 +18,6 @@
 #
 
 import sys, os, traceback, time
-
 from PySide import *
 from genericworker import *
 
@@ -26,46 +25,62 @@ class SpecificWorker(GenericWorker):
 	def __init__(self, proxy_map):
 		super(SpecificWorker, self).__init__(proxy_map)
 		self.timer.timeout.connect(self.compute)
-		self.Period = 2000
+		self.Period = 100
 		self.timer.start(self.Period)
 
-	def setParams(self, params):
-		#try:
-		#	par = params["InnerModelPath"]
-		#	innermodel_path=par.value
-		#	innermodel = InnerModel(innermodel_path)
-		#except:
-		#	traceback.print_exc()
-		#	print "Error reading config params"
+	def seParams(self, params):
+		try:
+			par = params["InnerModelPath"]
+			innermodel_path=par.value
+			innermodel = InnerModel(innermodel_path)
+		except:
+			traceback.print_exc()
+			print "Error reading config params"
 		return True
 
 	@QtCore.Slot()
 	def compute(self):
 		print 'SpecificWorker.compute...'
-		#computeCODE
-		#try:
-		#	self.differentialrobot_proxy.setSpeedBase(100, 0)
-		#except Ice.Exception, e:
-		#	traceback.print_exc()
-		#	print e
+		readMotors()
+		try:
+			stateTripod = tripodcontroller_proxy.getState()
+			
+		except Ice.Exception, e:
+			traceback.print_exc()
+			print e
+			
+		if self.newAction == "ROWING":
+			pass
+		if self.newAction == "PADDLING":
+			pass
+		if self.newAction == "STOP":
+			pass
+		if self.newAction == "HOME":
+			pass
+			
 		return True
 
 
-	#
-	# getStateLeg
-	#
-	def getStateLeg(self):
-		ret = StateLeg()
-		#
-		#implementCODE
-		#
-		return ret
+########################################################################
+
+	def readMotors(self):
+		motorsState = {}
+		motorsState = self._proxy.jointmotor_proxy.getAllMotorsState()
+			
+		for motor in motorsState:
+			print motor[""].pos
+			innerModel.getNode(motor).set	
+
+	
+	def rowing(self):
 
 
+########################################################################
+
 	#
-	# move
+	# action
 	#
-	def move(self, x, y, state):
+	def action(self, act):
 		#
 		#implementCODE
 		#
@@ -73,43 +88,10 @@ class SpecificWorker(GenericWorker):
 
 
 	#
-	# setListIKLeg
+	# getState
 	#
-	def setListIKLeg(self, ps, simu):
-		ret = bool()
-		#
-		#implementCODE
-		#
-		return ret
-
-
-	#
-	# setIKLeg
-	#
-	def setIKLeg(self, p, simu):
-		ret = bool()
-		#
-		#implementCODE
-		#
-		return ret
-
-
-	#
-	# setIKBody
-	#
-	def setIKBody(self, p, simu):
-		ret = bool()
-		#
-		#implementCODE
-		#
-		return ret
-
-
-	#
-	# setFKLeg
-	#
-	def setFKLeg(self, al, simu):
-		ret = bool()
+	def getState(self):
+		ret = State()
 		#
 		#implementCODE
 		#

@@ -114,6 +114,40 @@ if __name__ == '__main__':
 	except Ice.ConnectionRefusedException, e:
 		print 'Cannot connect to IceStorm! ('+proxy+')'
 		sys.exit(-1)
+
+	# Remote object connection for TripodController
+	try:
+		proxyString = ic.getProperties().getProperty('TripodControllerProxy')
+		try:
+			basePrx = ic.stringToProxy(proxyString)
+			tripodcontroller_proxy = TripodControllerPrx.checkedCast(basePrx)
+			mprx["TripodControllerProxy"] = tripodcontroller_proxy
+		except Ice.Exception:
+			print 'Cannot connect to the remote object (TripodController)', proxyString
+			#traceback.print_exc()
+			status = 1
+	except Ice.Exception, e:
+		print e
+		print 'Cannot get TripodControllerProxy property.'
+		status = 1
+
+
+	# Remote object connection for JointMotor
+	try:
+		proxyString = ic.getProperties().getProperty('JointMotorProxy')
+		try:
+			basePrx = ic.stringToProxy(proxyString)
+			jointmotor_proxy = JointMotorPrx.checkedCast(basePrx)
+			mprx["JointMotorProxy"] = jointmotor_proxy
+		except Ice.Exception:
+			print 'Cannot connect to the remote object (JointMotor)', proxyString
+			#traceback.print_exc()
+			status = 1
+	except Ice.Exception, e:
+		print e
+		print 'Cannot get JointMotorProxy property.'
+		status = 1
+
 	if status == 0:
 		worker = SpecificWorker(mprx)
 		worker.setParams(parameters)
