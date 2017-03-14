@@ -18,6 +18,7 @@
 #
 
 import sys, os, Ice, traceback, time, collections
+from timeit import default_timer as timer
 import numpy as np
 from pydynamixel import dynamixel
 from pydynamixel import registers
@@ -27,6 +28,7 @@ from mutex	import *
 from threading import Lock
 from PySide import *
 from genericworker import *
+
 
 ROBOCOMP = ''
 try:
@@ -70,7 +72,7 @@ class SpecificWorker(GenericWorker):
 
 	def setParams(self, params):
 		i=0
-		with open("/home/odroid/RoboticaAvanzada/dynamixelpython/etc/config","r") as f:
+		with open("/home/odroid/robocomp/components/hexapod-robot/dynamixelpython/etc/config","r") as f:
 			for linea in f.readlines():
 				
 				if "Device" in linea:
@@ -104,12 +106,13 @@ class SpecificWorker(GenericWorker):
 		self.bus = dynamixel.get_serial_for_url(self.serial_port)
 		
 		return True
-
+	
 	@QtCore.Slot()
 	def compute(self):
-		#self.ComprobarLista()
-		self.ComprobarLista2()
+		start = timer()
 		self.readState()
+		end = timer()
+		print (end-start)*1000
 				
 #####################################################
 	
@@ -140,9 +143,8 @@ class SpecificWorker(GenericWorker):
 
 	def mapear(self, x, in_min, in_max, out_min, out_max):
 		return (x-in_min)*(out_max-out_min)/(in_max-in_min)+out_min
-
-	def ComprobarLista(self):	
-		
+        
+	def ComprobarLista(self):
 		if len(self.lisPos) == 0:
 			return
 		try:
